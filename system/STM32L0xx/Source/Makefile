@@ -1,4 +1,5 @@
-TOOLS	 = ~/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/
+TOOLS = ${ARM_PATH}
+#TOOLS	 = ~/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/
 #TOOLS	  = ~/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/
 CPP	 = $(TOOLS)/bin/arm-none-eabi-cpp
 CC	 = $(TOOLS)/bin/arm-none-eabi-gcc
@@ -9,7 +10,7 @@ LD	 = $(TOOLS)/bin/arm-none-eabi-ld
 CFLAGS	 = -mcpu=cortex-m0plus -mthumb -c -g -Os $(WARNINGS) -std=c99 -ffunction-sections -fdata-sections -nostdlib -MMD $(EXTRAS) $(DEFINES) $(INCLUDES)
 ASFLAGS	 = -c -g -x assembler-with-cpp $(EXTRAS) $(DEFINES) $(INCLUDES)
 WARNINGS = -Wall -Wextra -Wno-unused-parameter
-EXTRAS	 = -march=armv6-m -mthumb -mabi=aapcs -mfloat-abi=soft
+EXTRAS	 = -march=armv6s-m -mthumb -mabi=aapcs -mfloat-abi=soft
 DEFINES	 = -DUSBD_LPM_ENABLE=0 -DUSBD_BCD_ENABLE=0
 INCLUDES = \
 	-I../../../system/CMSIS/Include \
@@ -27,7 +28,7 @@ INCLUDES = \
 	-I../../../system/STM32L0xx/Source/USB/Core/Inc \
 	-I../../../system/STM32L0xx/Source/USB \
 	-I../../../system/STM32L0xx/Include \
-	-I. 
+	-I.
 
 SRCS = \
 	./LoRa/Boards/cmwx1zzabz-board.c \
@@ -145,4 +146,3 @@ clean::
 -include $(OBJS_L052:.o=.d)
 -include $(OBJS_L072:.o=.d)
 -include $(OBJS_L082:.o=.d)
-
