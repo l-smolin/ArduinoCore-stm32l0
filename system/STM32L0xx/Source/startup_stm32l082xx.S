@@ -41,7 +41,7 @@
         .align  2
         .globl  __isr_vector
 __isr_vector:
-        .long   0x20005000            /* Top of Stack (needs to be 0) */
+        .long   0xbe00be00            /* Top of Stack (needs to be 0) */
         .long   Reset_Handler         /* Reset Handler */
         .long   NMI_Handler           /* NMI Handler */
         .long   HardFault_Handler     /* Hard Fault Handler */
@@ -105,7 +105,7 @@ Reset_Handler:
         ldr     r0, =__StackTop
         mov     sp, r0
         bl      SystemInit
-
+        
         /*
          *  The __copy_table has the following format per entry:
          *
@@ -150,7 +150,7 @@ Reset_Handler:
         bne     5b
 6:      cmp     r1, r2
         bne     4b
-
+        
 #ifndef __START
 #define __START main
 #endif

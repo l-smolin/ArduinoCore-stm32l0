@@ -79,6 +79,7 @@ SRCS = \
 	stm32l0_eeprom.c \
 	stm32l0_exti.c \
 	stm32l0_flash.c \
+	stm32l0_optbyte.c \
 	stm32l0_gpio.c \
 	stm32l0_i2c.c \
 	stm32l0_iwdg.c \
