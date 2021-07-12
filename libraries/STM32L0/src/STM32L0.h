@@ -65,7 +65,7 @@ public:
 
     bool  setClocks(uint32_t hclk, uint32_t pclk1 = 0, uint32_t pclk2 = 0);
     void  setClocks(uint32_t &hclk, uint32_t &pclk1, uint32_t &pclk2);
-    
+
     void  enablePowerSave();
     void  disablePowerSave();
     void  wakeup();
@@ -83,12 +83,15 @@ public:
 
     bool  flashErase(uint32_t address, uint32_t count);
     bool  flashProgram(uint32_t address, const void *data, uint32_t count);
+    bool  setBFB2();
+    void  goToDFU();
+    void  waitForDFU(Uart NRF);
 
  public:
     void  stop(uint32_t timeout = 0xffffffff) __attribute__((deprecated("use STM32L0.deepsleep() instead"))) { deepsleep(timeout); }
 #if defined(USBCON)
     bool  getVBUS()  __attribute__((deprecated("use USBDevice.attached() instead"))) { return USBDevice.attached(); }
-#endif    
+#endif
 };
 
 extern STM32L0Class STM32L0;

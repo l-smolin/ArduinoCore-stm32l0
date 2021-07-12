@@ -54,7 +54,7 @@ float STM32L0Class::getVBAT()
     return (STM32L0_CONFIG_VBAT_SCALE * vdda * vbat_data) / 4095.0;
 
 #else /* defined(STM32L0_CONFIG_PIN_VBAT) */
-    
+
     return -1;
 
 #endif /* defined(STM32L0_CONFIG_PIN_VBAT) */
@@ -199,7 +199,7 @@ bool STM32L0Class::flashErase(uint32_t address, uint32_t count)
     stm32l0_flash_unlock();
     stm32l0_flash_erase(address, count);
     stm32l0_flash_lock();
-    
+
     return true;
 }
 
@@ -220,6 +220,118 @@ bool STM32L0Class::flashProgram(uint32_t address, const void *data, uint32_t cou
     }
 
     return true;
+}
+
+void STM32L0Class::goToDFU()
+{
+  if (stm32l0_flash_unlock())
+  {
+    if (stm32l0_flash_erase(0x08018000, 128) && stm32l0_flash_erase(0x08000000, 128))
+    {
+      STM32L0.reset();
+    }
+  }
+}
+
+bool STM32L0Class::setBFB2()
+{
+  // Check to see if the BFB2 bit is set
+  if ((FLASH->OPTR & FLASH_OPTR_BFB2) == 0)
+  {
+    if (stm32l0_optbyte_unlock())
+    {
+      if (stm32l0_optbyte_program(0x01, 0x80F0))
+      {
+        FLASH->PECR |= FLASH_PECR_OBL_LAUNCH;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    return true;
+  }
+}
+
+void STM32L0Class::waitForDFU(Uart NRF)
+{
+  // Used for timeouts
+  uint32_t ms = 0;
+
+  // Look for the first character informing us we need to flush everything out of the buffer
+  if(NRF.available())
+  {
+    if(NRF.read() != 0x1B)
+    {
+      return;
+    }
+  }
+  else
+  {
+    return;
+  }
+
+  // Flush everything out of the buffer, then send a response
+  NRF.flush();
+  NRF.write(0x1B);
+
+  // Now everything has to be pretty precise
+  // Give them a little more time here to clear the buffer
+  // In case we were sending a lot of stuff when
+  // asked to go to DFU
+  ms = millis();
+  while(millis() - ms < 1000)
+  {
+    if(NRF.available())
+    {
+      if(NRF.read() == 0x1B)
+      {
+        // Continue
+        break;
+      }
+      else
+      {
+        // Wrong character, abort
+        return;
+      }
+    }
+  }
+
+  // Ask to confirm
+  NRF.write('b');
+  NRF.flush();
+
+  // Need to get response within 100ms
+  ms = millis();
+  while(millis() - ms < 100)
+  {
+    if(NRF.available())
+    {
+      // Got confirm
+      if(NRF.read() == 'c')
+      {
+        // Clear the buffer
+        while (NRF.available())
+        {
+          NRF.read();
+        }
+        // Do it
+        STM32L0.goToDFU();
+      }
+      else
+      {
+        // Wrong character, abort
+        return;
+      }
+    }
+  }
 }
 
 STM32L0Class STM32L0;

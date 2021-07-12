@@ -41,7 +41,7 @@
         .align  2
         .globl  __isr_vector
 __isr_vector:
-        .long   0x20005000            /* Top of Stack (needs to be 0) */
+        .long   0x20005000            /* Top of Stack (End of SRAM) */
         .long   Reset_Handler         /* Reset Handler */
         .long   NMI_Handler           /* NMI Handler */
         .long   HardFault_Handler     /* Hard Fault Handler */

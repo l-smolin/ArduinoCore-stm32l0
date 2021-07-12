@@ -137,7 +137,7 @@ bool stm32l0_flash_erase(uint32_t address, uint32_t count)
     {
         return false;
     }
-    
+
     do
     {
         primask = __get_PRIMASK();
@@ -224,7 +224,7 @@ bool stm32l0_flash_program(uint32_t address, const uint8_t *data, uint32_t count
 
             data    += 64;
             address += 64;
-        
+
             FLASH->PECR &= ~(FLASH_PECR_PROG | FLASH_PECR_FPRG);
         }
         else
@@ -233,7 +233,7 @@ bool stm32l0_flash_program(uint32_t address, const uint8_t *data, uint32_t count
 
             data_e = data + size;
 
-            do 
+            do
             {
                 stm32l0_flash_do_program(address, data, data + 4);
 
@@ -244,7 +244,7 @@ bool stm32l0_flash_program(uint32_t address, const uint8_t *data, uint32_t count
                 else
                 {
                     FLASH->SR = (FLASH_SR_WRPERR | FLASH_SR_PGAERR | FLASH_SR_SIZERR | FLASH_SR_RDERR | FLASH_SR_NOTZEROERR | FLASH_SR_FWWERR);
-                    
+
                     success = false;
                 }
 
@@ -255,7 +255,7 @@ bool stm32l0_flash_program(uint32_t address, const uint8_t *data, uint32_t count
 
             FLASH->PECR &= ~FLASH_PECR_PROG;
         }
-    
+
         __set_PRIMASK(primask);
 
         count -= size;
