@@ -50,6 +50,7 @@
 #include "stm32l0_timer.h"
 #include "stm32l0_uart.h"
 #include "stm32l0_usbd_cdc.h"
+#include "stm32l0_optbyte.h"
 
 #ifdef __cplusplus
 extern "C" {
