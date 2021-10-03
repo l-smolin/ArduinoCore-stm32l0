@@ -38,6 +38,8 @@
 extern "C" {
 #endif
 
+#undef DAC1
+
 enum {
     STM32L0_UART_INSTANCE_USART1 = 0,
     STM32L0_UART_INSTANCE_USART2,
